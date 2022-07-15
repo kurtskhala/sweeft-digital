@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import './App.css';
-import Friends from "./friends";
-import UserInfo from "./userInfo";
 
 
-const App = () => {
+const Friends = () => {
   let userData = [];
-
   let pageNum = 1;
   const [users, setUsers] = useState(userData);
 
 
   const fetchData = (path, page, number) => {
-    fetch(`http://sweeftdigital-intern.eu-central-1.elasticbeanstalk.com/${path}${page}/${number}`)
+    fetch(`http://sweeftdigital-intern.eu-central-1.elasticbeanstalk.com${path}/friends/${page}/${number}`)
       .then(response => {
         return response.json()
       })
@@ -29,29 +24,25 @@ const App = () => {
 
   useEffect(() => {
       if(pageNum===1){
-        fetchData('user/',pageNum,20);
+        fetchData(window.location.pathname,pageNum,20);
         pageNum++;
       }
       window.addEventListener('scroll',()=>{
         if(window.scrollY + window.innerHeight >= 
         document.documentElement.scrollHeight-1){
-          fetchData('user/',pageNum,20);
+          fetchData(window.location.pathname,pageNum,20);
           pageNum++;
         }
       })
   }, []);
 
   const handleClick = (event, n) =>{
-    window.location.href=`/user/${n}`;
-    
+      window.location.href=`/user/${n}`;
   }
 
 
   return (
-    <div className="container">
-      <Router>
-        <Routes>
-          <Route path="/" element={
+    <div>
           <div className="list">
             {users.map(user => (
               <div key={user.id} className="list-item" onClick={event => handleClick(event, user.id)}>
@@ -63,18 +54,6 @@ const App = () => {
               </div>
             ))}
           </div>
-        } />
-          <Route path={window.location.pathname} element={
-            <div className="user-friends">
-              <UserInfo />
-              <div>
-                
-              </div>
-              <Friends />
-            </div>
-          } />
-        </Routes>
-      </Router>
     </div>
   );
 
@@ -82,4 +61,4 @@ const App = () => {
 
 }
 
-export default App
+export default Friends
